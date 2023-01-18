@@ -14,13 +14,14 @@ class DdsMessageProcessor:
                  consumer: KafkaConsumer,
                  producer: KafkaProducer,
                  dds_repository: DdsRepository,
-                 logger: Logger) -> None:
+                 logger: Logger,
+                 batch_size: int = 30) -> None:
 
         self._logger = logger
         self._consumer = consumer
         self._producer = producer
         self._dds_repository = dds_repository
-        self._batch_size = 30
+        self._batch_size = batch_size
 
     def _insert_h_order(self,
                         order_id: int,
@@ -174,14 +175,17 @@ class DdsMessageProcessor:
 
         self._dds_repository.insert(l_order_product)
 
-    def __create_output_message(self, user_id: UUID, lst_products: list, lst_categories: list) -> dict:
+    def __create_output_message(self, user_id: UUID) -> dict:
+
+        lst_products = self._dds_repository.get_grouped_data(h_user_pk, ['h_product_pk', 'name'])
+        lst_categories = self._dds_repository.get_grouped_data(h_user_pk, ['h_category_pk', 'category_name'])
 
         products = [{'id': item[1], 'name': item[2], 'cnt': item[3]} for item in lst_products]
         categories = [{'id': item[1], 'name': item[2], 'cnt': item[3]} for item in lst_categories]
 
         return {'user_id': user_id, 'products': products, 'categories': categories}
 
-    def _message_processing(message: dict): -> UUID
+    def _message_processing(self, message: dict): -> UUID
 
         payload = message['payload']
         products = payload['products']
@@ -298,6 +302,8 @@ class DdsMessageProcessor:
                                          h_product_pk=h_product_pk,
                                          hk_order_product_pk=hk_order_product_pk)
 
+        return h_user_pk
+
 
 
     def run(self) -> None:
@@ -311,11 +317,7 @@ class DdsMessageProcessor:
                 break
 
             h_user_pk = self._message_processing(message)
-
-            lst_products = self._dds_repository.get_grouped_data(h_user_pk, ['h_product_pk', 'name'])
-            lst_categories = self._dds_repository.get_grouped_data(h_user_pk, ['h_category_pk', 'category_name'])
-
-            output_message = self.__create_output_message(h_user_pk, lst_products, lst_categories)
+            output_message = self.__create_output_message(h_user_pk)
 
             self._producer.produce(output_message)
 

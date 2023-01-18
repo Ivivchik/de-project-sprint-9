@@ -7,10 +7,10 @@ class DdsRepository:
     def __init__(self, db: PgConnect) -> None:
         self._db = db
 
-    def __create_pattern_insert(self,
-                              table_name: str, 
-                              lst_name: list[str],
-                              unique_keys: list[str]) -> str:
+    def _create_pattern_insert(self,
+                                table_name: str, 
+                                lst_name: list[str],
+                                unique_keys: list[str]) -> str:
 
         column_name_str = ', '.join(lst_name)
         values_name_str = ', '.join([f"%({name})s" for name in lst_name])
@@ -28,7 +28,7 @@ class DdsRepository:
         table_name = model.get_table_name()
         list_column = list(model.__fields__.keys())
         unique_keys = model.get_unique_keys()
-        query = self.__create_pattern_insert(table_name, list_column, unique_keys)
+        query = self._create_pattern_insert(table_name, list_column, unique_keys)
 
         with self._db.connection() as conn:
             with conn.cursor() as cur:
