@@ -8,4 +8,4 @@
 3. Ссылка на второй сервис
 	* `cr.yandex/crp3d4jhq3880np7026c/cdm_service`
 4. Ссыка на дашборд
-	* `cr.yandex/crp3d4jhq3880np7026c/cdm_service`
+	* `https://datalens.yandex/yt6l7bjbja8so`
