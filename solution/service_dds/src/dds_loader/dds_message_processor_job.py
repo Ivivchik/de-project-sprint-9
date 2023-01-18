@@ -22,6 +22,158 @@ class DdsMessageProcessor:
         self._dds_repository = dds_repository
         self._batch_size = 30
 
+    def _insert_h_order(self,
+                        order_id: int,
+                        order_dt: str,
+                        h_order_pk: UUID): -> None
+    
+        h_order = HOrder(order_id=order_id,
+                         order_dt=order_dt,
+                         h_order_pk=h_order_pk)
+
+        self._dds_repository.insert(h_order)
+        
+    def _insert_s_order_cost(self,
+                             cost: str,
+                             payment: str,
+                             h_order_pk: UUID,
+                             hk_order_cost_pk: UUID): -> None
+
+        s_order_cost = SOrderCost(cost=cost,
+                                  payment=payment,
+                                  h_order_pk=h_order_pk,
+                                  hk_order_cost_pk=hk_order_cost_pk)
+        
+        self._dds_repository.insert(s_order_cost)
+            
+    def _insert_s_order_status(self,
+                               status: str,
+                               h_order_pk: UUID,
+                               hk_order_status_pk: UUID): -> None
+
+        s_order_status = SOrderStatus(status=status,
+                                      h_order_pk=h_order_pk,
+                                      hk_order_status_pk=hk_order_status_pk)
+
+        self._dds_repository.insert(s_order_status)
+
+
+    def _insert_h_restaurant(self,
+                             restaurant_id: str,
+                             h_restaurant_pk: UUID): -> None
+
+        h_restaurant = HRestaurant(restaurant_id=restaurant_id,
+                                   h_restaurant_pk=h_restaurant_pk)
+
+        self._dds_repository.insert(h_restaurant)
+
+    def _insert_s_restaurant_names(self,
+                                   name: str,
+                                   h_restaurant_pk: UUID,
+                                   hk_restaurant_names_pk: UUID): -> None
+
+        s_restaurant_names = SRestaurantNames(name=restaurant_name,
+                                              h_restaurant_pk=h_restaurant_pk,
+                                              hk_restaurant_names_pk=hk_restaurant_names_pk)
+
+        self._dds_repository.insert(s_restaurant_names)
+
+
+    def _insert_s_user_names(self,
+                             user_name: str,
+                             h_user_pk: UUID,
+                             user_login: str,
+                             hk_user_names_pk: UUID): -> None
+
+        s_user_names = SUserNames(username=user_name,
+                                  h_user_pk=h_user_pk,
+                                  userlogin=user_login,
+                                  hk_user_names_pk=hk_user_names_pk)
+
+        self._dds_repository.insert(s_user_names)
+
+
+    def _insert_l_user_order(self,
+                             h_user_pk: UUID,
+                             h_order_pk: UUID,
+                             hk_order_user_pk: UUID): -> None
+
+        l_user_order = LOrderUser(h_user_pk=h_user_pk,
+                                  h_order_pk=h_order_pk,
+                                  hk_order_user_pk=hk_order_user_pk)
+
+        self._dds_repository.insert(l_user_order)
+
+    def _insert_h_product(self,
+                          product_id: str,
+                          h_product_pk: UUID): -> None
+
+        h_product = HProduct(product_id=product_id,
+                             h_product_pk=h_product_pk)
+
+        self._dds_repository.insert(h_product)
+
+    def _insert_s_poduct_names(self,
+                               name: str,
+                               h_product_pk: UUID,
+                               hk_product_names_pk: UUID): -> None
+
+        s_poduct_names = SProductNames(name=product_name,
+                                       h_product_pk=h_product_pk,
+                                       hk_product_names_pk=hk_product_names_pk)
+
+        self._dds_repository.insert(s_poduct_names)
+
+    def _insert_h_category(self,
+                           category_name: str,
+                           h_category_pk: UUID): -> None
+    
+        h_category = HCategory(h_category_pk=h_category_pk,
+                               category_name=category_name)
+        
+        self._dds_repository.insert(h_category)
+
+    def _insert_l_product_category(self,
+                                   h_product_pk: UUID,
+                                   h_category_pk: UUID,
+                                   hk_product_category_pk: UUID): -> None
+
+        l_product_category = LProductCategory(h_product_pk=h_product_pk,
+                                              h_category_pk=h_category_pk,
+                                              hk_product_category_pk=hk_product_category_pk)
+
+        self._dds_repository.insert(l_product_category)
+
+    def _insert_h_user(self,
+                       user_id: str,
+                       h_user_pk: UUID): -> None
+
+        h_user = HUser(user_id=user_id, h_user_pk=h_user_pk)
+
+        self._dds_repository.insert(h_user)
+
+    def _insert_l_product_restaurant(self,
+                                     h_product_pk: UUID,
+                                     h_restaurant_pk: UUID,
+                                     hk_product_restaurant_pk: UUID): -> None
+
+        l_product_restaurant = LProductRestaurant(h_product_pk=h_product_pk,
+                                                  h_restaurant_pk=h_restaurant_pk,
+                                                  hk_product_restaurant_pk=hk_product_restaurant_pk)
+
+        self._dds_repository.insert(l_product_restaurant)
+        
+    def _insert_l_order_product(self,
+                                h_order_pk: UUID,
+                                h_product_pk: UUID,
+                                hk_order_product_pk: UUID): -> None
+
+        l_order_product = LOrderProduct(h_order_pk=h_order_pk,
+                                        h_product_pk=h_product_pk,
+                                        hk_order_product_pk=hk_order_product_pk)
+
+        self._dds_repository.insert(l_order_product)
+
     def __create_output_message(self, user_id: UUID, lst_products: list, lst_categories: list) -> dict:
 
         products = [{'id': item[1], 'name': item[2], 'cnt': item[3]} for item in lst_products]
@@ -29,10 +181,7 @@ class DdsMessageProcessor:
 
         return {'user_id': user_id, 'products': products, 'categories': categories}
 
-    def run(self) -> None:
-        self._logger.info(f"{datetime.utcnow()}: START")
-
-        message = self._consumer.consume()
+    def _message_processing(message: dict): -> UUID
 
         payload = message['payload']
         products = payload['products']
@@ -74,34 +223,34 @@ class DdsMessageProcessor:
         # filed for dds.l_user_order
         hk_order_user_pk = uuid5(NAMESPACE_X500, str(order_id) + user_id)
 
-        h_order = HOrder(order_id=order_id,
-                         order_dt=order_dt,
-                         h_order_pk=h_order_pk)
+        self._insert_h_order(order_id=order_id,
+                             order_dt=order_dt,
+                             h_order_pk=h_order_pk)
         
-        s_order_cost = SOrderCost(cost=cost,
+        self._insert_s_order_cost(cost=cost,
                                   payment=payment,
                                   h_order_pk=h_order_pk,
                                   hk_order_cost_pk=hk_order_cost_pk)
 
-        s_order_status = SOrderStatus(status=status,
-                                      h_order_pk=h_order_pk,
-                                      hk_order_status_pk=hk_order_status_pk)
+        self._insert_s_order_status(status=status,
+                                    h_order_pk=h_order_pk,
+                                    hk_order_status_pk=hk_order_status_pk)
 
-        h_restaurant = HRestaurant(restaurant_id=restaurant_id,
-                                   h_restaurant_pk=h_restaurant_pk)
+        self._insert_h_restaurant(restaurant_id=restaurant_id,
+                                  h_restaurant_pk=h_restaurant_pk)
 
-        s_restaurant_names = SRestaurantNames(name=restaurant_name,
-                                              h_restaurant_pk=h_restaurant_pk,
-                                              hk_restaurant_names_pk=hk_restaurant_names_pk)
+        self._insert_s_restaurant_names(name=restaurant_name,
+                                        h_restaurant_pk=h_restaurant_pk,
+                                        hk_restaurant_names_pk=hk_restaurant_names_pk)
 
-        h_user = HUser(user_id=user_id, h_user_pk=h_user_pk)
+        self._insert_h_user(user_id=user_id, h_user_pk=h_user_pk)
 
-        s_user_names = SUserNames(username=user_name,
+        self._insert_s_user_names(username=user_name,
                                   h_user_pk=h_user_pk,
                                   userlogin=user_login,
                                   hk_user_names_pk=hk_user_names_pk)
 
-        l_user_order = LOrderUser(h_user_pk=h_user_pk,
+        self._insert_l_user_order(h_user_pk=h_user_pk,
                                   h_order_pk=h_order_pk,
                                   hk_order_user_pk=hk_order_user_pk)
 
@@ -127,51 +276,47 @@ class DdsMessageProcessor:
             # filed for dds.l_order_product
             hk_order_product_pk = uuid5(NAMESPACE_X500, str(order_id) + product_id)
 
-            h_product = HProduct(product_id=product_id,
-                                 h_product_pk=h_product_pk)
+            self._insert_h_product(product_id=product_id,
+                                   h_product_pk=h_product_pk)
 
-            s_poduct_names = SProductNames(name=product_name,
-                                           h_product_pk=h_product_pk,
-                                           hk_product_names_pk=hk_product_names_pk)
+            self._insert_s_poduct_names(name=product_name,
+                                        h_product_pk=h_product_pk,
+                                        hk_product_names_pk=hk_product_names_pk)
 
-            h_category = HCategory(h_category_pk=h_category_pk,
-                                   category_name=category_name)
+            self._insert_h_category(h_category_pk=h_category_pk,
+                                    category_name=category_name)
 
-            l_product_category = LProductCategory(h_product_pk=h_product_pk,
-                                                  h_category_pk=h_category_pk,
-                                                  hk_product_category_pk=hk_product_category_pk)
+            self._insert_l_product_category(h_product_pk=h_product_pk,
+                                            h_category_pk=h_category_pk,
+                                            hk_product_category_pk=hk_product_category_pk)
 
-            l_product_restaurant = LProductRestaurant(h_product_pk=h_product_pk,
-                                                      h_restaurant_pk=h_restaurant_pk,
-                                                      hk_product_restaurant_pk=hk_product_restaurant_pk)
+            self._insert_l_product_restaurant(h_product_pk=h_product_pk,
+                                              h_restaurant_pk=h_restaurant_pk,
+                                              hk_product_restaurant_pk=hk_product_restaurant_pk)
 
-            l_order_product = LOrderProduct(h_order_pk=h_order_pk,
-                                            h_product_pk=h_product_pk,
-                                            hk_order_product_pk=hk_order_product_pk)
-
-            self._dds_repository.insert(h_product)
-            self._dds_repository.insert(s_poduct_names)
-            self._dds_repository.insert(h_category)
-            self._dds_repository.insert(l_product_category)
-            self._dds_repository.insert(l_product_restaurant)
-            self._dds_repository.insert(l_order_product)
+            self._insert_l_order_product(h_order_pk=h_order_pk,
+                                         h_product_pk=h_product_pk,
+                                         hk_order_product_pk=hk_order_product_pk)
 
 
-        self._dds_repository.insert(h_order)
-        self._dds_repository.insert(s_order_cost)
-        self._dds_repository.insert(s_order_status)
-        self._dds_repository.insert(h_restaurant)
-        self._dds_repository.insert(s_restaurant_names)
-        self._dds_repository.insert(h_user)
-        self._dds_repository.insert(s_user_names)
-        self._dds_repository.insert(l_user_order)
 
+    def run(self) -> None:
+        self._logger.info(f"{datetime.utcnow()}: START")
 
-        lst_products = self._dds_repository.get_grouped_data(h_user_pk, ['h_product_pk', 'name'])
-        lst_categories = self._dds_repository.get_grouped_data(h_user_pk, ['h_category_pk', 'category_name'])
+        for i in range(0, self._batch_size):
 
-        output_message = self.__create_output_message(h_user_pk, lst_products, lst_categories)
-        
-        self._producer.produce(output_message)
+            message = self._consumer.consume()
+
+            if not message:
+                break
+
+            h_user_pk = self._message_processing(message)
+
+            lst_products = self._dds_repository.get_grouped_data(h_user_pk, ['h_product_pk', 'name'])
+            lst_categories = self._dds_repository.get_grouped_data(h_user_pk, ['h_category_pk', 'category_name'])
+
+            output_message = self.__create_output_message(h_user_pk, lst_products, lst_categories)
+
+            self._producer.produce(output_message)
 
         self._logger.info(f"{datetime.utcnow()}: FINISH")
