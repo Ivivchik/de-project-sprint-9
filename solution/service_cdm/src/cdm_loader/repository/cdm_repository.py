@@ -1,6 +1,6 @@
 from lib.pg import PgConnect
 
-from dds_loader.cmd_models.generic_model import DDSGenericModel
+from cdm_loader.cdm_models.generic_model import CDMGenericModel
 
 class CdmRepository:
     def __init__(self, db: PgConnect) -> None:
@@ -22,7 +22,7 @@ class CdmRepository:
         do_update = f"""DO UPDATE SET {update_name_str};"""
         return '\n'.join([inser_into, values_into, on_coflict_into, do_update])
 
-    def insert(self, model: DDSGenericModel) -> None:
+    def insert(self, model: CDMGenericModel) -> None:
 
         table_name = model.get_table_name()
         list_column = list(model.__fields__.keys())

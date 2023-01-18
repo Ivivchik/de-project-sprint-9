@@ -61,6 +61,8 @@ class StgMessageProcessor:
                         for x in payload['order_items']
                         if x['id'] == y['_id']]
 
+        return products
+
     def _insert_order_events(self,
                              payload: dict,
                              object_id: int,
@@ -77,7 +79,7 @@ class StgMessageProcessor:
         self._stg_repository.insert(stg_order_events)        
 
 
-    def _message_processing(message: dict) -> dict:
+    def _message_processing(self, message: dict) -> dict:
 
         payload = message['payload']
 
@@ -114,7 +116,7 @@ class StgMessageProcessor:
         # Пишем в лог, что джоб был запущен.
         self._logger.info(f"{datetime.utcnow()}: START")
 
-        for i in range(0, self._batch_size)
+        for i in range(0, self._batch_size):
             message = self._consumer.consume()
 
             if not message:

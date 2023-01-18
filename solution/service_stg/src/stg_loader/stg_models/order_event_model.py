@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel
+
+from stg_loader.stg_models.generic_model import STGGenericModel
 
 class StgOrderEvents(STGGenericModel):
     object_id: int

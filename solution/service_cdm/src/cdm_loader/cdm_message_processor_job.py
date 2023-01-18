@@ -30,7 +30,7 @@ class CdmMessageProcessor:
         for item in products:
             id = item['id']
             name = item['name']
-            count = item['ctn']
+            count = item['cnt']
 
             res = UserProductCounters(user_id=user_id,
                                       product_id=id,
@@ -42,7 +42,7 @@ class CdmMessageProcessor:
         for item in categories:
             id = item['id']
             name = item['name']
-            count = item['ctn']
+            count = item['cnt']
 
             res = UserCategoryCounters(user_id=user_id,
                                       category_id=id,

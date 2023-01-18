@@ -26,7 +26,7 @@ class DdsMessageProcessor:
     def _insert_h_order(self,
                         order_id: int,
                         order_dt: str,
-                        h_order_pk: UUID): -> None
+                        h_order_pk: UUID) -> None:
     
         h_order = HOrder(order_id=order_id,
                          order_dt=order_dt,
@@ -38,7 +38,7 @@ class DdsMessageProcessor:
                              cost: str,
                              payment: str,
                              h_order_pk: UUID,
-                             hk_order_cost_pk: UUID): -> None
+                             hk_order_cost_pk: UUID) -> None:
 
         s_order_cost = SOrderCost(cost=cost,
                                   payment=payment,
@@ -50,7 +50,7 @@ class DdsMessageProcessor:
     def _insert_s_order_status(self,
                                status: str,
                                h_order_pk: UUID,
-                               hk_order_status_pk: UUID): -> None
+                               hk_order_status_pk: UUID) -> None:
 
         s_order_status = SOrderStatus(status=status,
                                       h_order_pk=h_order_pk,
@@ -61,7 +61,7 @@ class DdsMessageProcessor:
 
     def _insert_h_restaurant(self,
                              restaurant_id: str,
-                             h_restaurant_pk: UUID): -> None
+                             h_restaurant_pk: UUID) -> None:
 
         h_restaurant = HRestaurant(restaurant_id=restaurant_id,
                                    h_restaurant_pk=h_restaurant_pk)
@@ -71,9 +71,9 @@ class DdsMessageProcessor:
     def _insert_s_restaurant_names(self,
                                    name: str,
                                    h_restaurant_pk: UUID,
-                                   hk_restaurant_names_pk: UUID): -> None
+                                   hk_restaurant_names_pk: UUID) -> None:
 
-        s_restaurant_names = SRestaurantNames(name=restaurant_name,
+        s_restaurant_names = SRestaurantNames(name=name,
                                               h_restaurant_pk=h_restaurant_pk,
                                               hk_restaurant_names_pk=hk_restaurant_names_pk)
 
@@ -84,7 +84,7 @@ class DdsMessageProcessor:
                              user_name: str,
                              h_user_pk: UUID,
                              user_login: str,
-                             hk_user_names_pk: UUID): -> None
+                             hk_user_names_pk: UUID) -> None:
 
         s_user_names = SUserNames(username=user_name,
                                   h_user_pk=h_user_pk,
@@ -97,7 +97,7 @@ class DdsMessageProcessor:
     def _insert_l_user_order(self,
                              h_user_pk: UUID,
                              h_order_pk: UUID,
-                             hk_order_user_pk: UUID): -> None
+                             hk_order_user_pk: UUID) -> None:
 
         l_user_order = LOrderUser(h_user_pk=h_user_pk,
                                   h_order_pk=h_order_pk,
@@ -107,7 +107,7 @@ class DdsMessageProcessor:
 
     def _insert_h_product(self,
                           product_id: str,
-                          h_product_pk: UUID): -> None
+                          h_product_pk: UUID) -> None:
 
         h_product = HProduct(product_id=product_id,
                              h_product_pk=h_product_pk)
@@ -117,9 +117,9 @@ class DdsMessageProcessor:
     def _insert_s_poduct_names(self,
                                name: str,
                                h_product_pk: UUID,
-                               hk_product_names_pk: UUID): -> None
+                               hk_product_names_pk: UUID) -> None:
 
-        s_poduct_names = SProductNames(name=product_name,
+        s_poduct_names = SProductNames(name=name,
                                        h_product_pk=h_product_pk,
                                        hk_product_names_pk=hk_product_names_pk)
 
@@ -127,7 +127,7 @@ class DdsMessageProcessor:
 
     def _insert_h_category(self,
                            category_name: str,
-                           h_category_pk: UUID): -> None
+                           h_category_pk: UUID) -> None:
     
         h_category = HCategory(h_category_pk=h_category_pk,
                                category_name=category_name)
@@ -137,7 +137,7 @@ class DdsMessageProcessor:
     def _insert_l_product_category(self,
                                    h_product_pk: UUID,
                                    h_category_pk: UUID,
-                                   hk_product_category_pk: UUID): -> None
+                                   hk_product_category_pk: UUID) -> None:
 
         l_product_category = LProductCategory(h_product_pk=h_product_pk,
                                               h_category_pk=h_category_pk,
@@ -147,7 +147,7 @@ class DdsMessageProcessor:
 
     def _insert_h_user(self,
                        user_id: str,
-                       h_user_pk: UUID): -> None
+                       h_user_pk: UUID) -> None:
 
         h_user = HUser(user_id=user_id, h_user_pk=h_user_pk)
 
@@ -156,7 +156,7 @@ class DdsMessageProcessor:
     def _insert_l_product_restaurant(self,
                                      h_product_pk: UUID,
                                      h_restaurant_pk: UUID,
-                                     hk_product_restaurant_pk: UUID): -> None
+                                     hk_product_restaurant_pk: UUID) -> None:
 
         l_product_restaurant = LProductRestaurant(h_product_pk=h_product_pk,
                                                   h_restaurant_pk=h_restaurant_pk,
@@ -167,7 +167,7 @@ class DdsMessageProcessor:
     def _insert_l_order_product(self,
                                 h_order_pk: UUID,
                                 h_product_pk: UUID,
-                                hk_order_product_pk: UUID): -> None
+                                hk_order_product_pk: UUID) -> None:
 
         l_order_product = LOrderProduct(h_order_pk=h_order_pk,
                                         h_product_pk=h_product_pk,
@@ -177,15 +177,15 @@ class DdsMessageProcessor:
 
     def __create_output_message(self, user_id: UUID) -> dict:
 
-        lst_products = self._dds_repository.get_grouped_data(h_user_pk, ['h_product_pk', 'name'])
-        lst_categories = self._dds_repository.get_grouped_data(h_user_pk, ['h_category_pk', 'category_name'])
+        lst_products = self._dds_repository.get_grouped_data(user_id, ['h_product_pk', 'name'])
+        lst_categories = self._dds_repository.get_grouped_data(user_id, ['h_category_pk', 'category_name'])
 
-        products = [{'id': item[1], 'name': item[2], 'cnt': item[3]} for item in lst_products]
-        categories = [{'id': item[1], 'name': item[2], 'cnt': item[3]} for item in lst_categories]
+        products = [{'id': str(item[1]), 'name': item[2], 'cnt': item[3]} for item in lst_products]
+        categories = [{'id': str(item[1]), 'name': item[2], 'cnt': item[3]} for item in lst_categories]
 
-        return {'user_id': user_id, 'products': products, 'categories': categories}
+        return {'user_id': str(user_id), 'products': products, 'categories': categories}
 
-    def _message_processing(self, message: dict): -> UUID
+    def _message_processing(self, message: dict) -> UUID:
 
         payload = message['payload']
         products = payload['products']
@@ -249,9 +249,9 @@ class DdsMessageProcessor:
 
         self._insert_h_user(user_id=user_id, h_user_pk=h_user_pk)
 
-        self._insert_s_user_names(username=user_name,
+        self._insert_s_user_names(user_name=user_name,
                                   h_user_pk=h_user_pk,
-                                  userlogin=user_login,
+                                  user_login=user_login,
                                   hk_user_names_pk=hk_user_names_pk)
 
         self._insert_l_user_order(h_user_pk=h_user_pk,
