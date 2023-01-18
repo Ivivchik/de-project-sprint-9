@@ -5,6 +5,8 @@ from flask import Flask
 
 from app_config import AppConfig
 from dds_loader.dds_message_processor_job import DdsMessageProcessor
+from dds_loader.repository.dds_repository import DdsRepository
+
 
 app = Flask(__name__)
 
@@ -19,8 +21,19 @@ def hello_world():
 if __name__ == '__main__':
     app.logger.setLevel(logging.DEBUG)
 
+    config = AppConfig()
+
+    consumer = config.kafka_consumer()
+    producer = config.kafka_producer()
+    pg_connect = config.pg_warehouse_db()
+
+    dds_repository = DdsRepository(pg_connect)
+    
     proc = DdsMessageProcessor(
-        app.logger
+        logger=app.logger,
+        consumer=consumer,
+        producer=producer,
+        dds_repository=dds_repository
     )
 
     scheduler = BackgroundScheduler()

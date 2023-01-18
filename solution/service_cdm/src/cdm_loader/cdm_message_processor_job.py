@@ -20,10 +20,6 @@ class CdmMessageProcessor:
         self._logger = logger
         self._batch_size = batch_size
 
-    def _insert_():
-
-
-
     def _messsage_processing(self, message: dict) -> None:
 
         user_id = message['user_id']
@@ -56,26 +52,6 @@ class CdmMessageProcessor:
             self._cdm_repository.insert(res)
 
 
-    def fun(lst, class_type) -> None:
-
-        for item in lst:
-            id = item['id']
-            name = item['name']
-            count = item['ctn']
-
-            res = class_type(user_id=user_id,
-                                      category_id=id,
-                                      category_name=name,
-                                      order_cnt=count)
-
-            self._cdm_repository.insert(res)
-
-
-
-
-
-
-
     def run(self) -> None:
         self._logger.info(f"{datetime.utcnow()}: START")
 
@@ -84,7 +60,7 @@ class CdmMessageProcessor:
 
             if not message:
                 break
-            
 
+            self._messsage_processing(message)
 
         self._logger.info(f"{datetime.utcnow()}: FINISH")
