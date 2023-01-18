@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   # Link to your container registry. You will launch it in Yandex Cloud.
-  repository: cr.yandex/crp3d4jhq3880np7026c/stg_service
+  repository: cr.yandex/crp3d4jhq3880np7026c/dds_service
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "v2023-01-18-r1"
@@ -19,12 +19,8 @@ config:
   KAFKA_CONSUMER_USERNAME: "producer_consumer"
   KAFKA_CONSUMER_PASSWORD: "************"
   KAFKA_CONSUMER_GROUP: "producer_consumer"
-  KAFKA_SOURCE_TOPIC: "order-service_orders"
-  KAFKA_DESTINATION_TOPIC: "stg-service-orders"
-
-  REDIS_HOST: "c-c9q2au28dlp1d3hbo2f4.rw.mdb.yandexcloud.net"
-  REDIS_PORT: "6380"
-  REDIS_PASSWORD: "************"
+  KAFKA_SOURCE_TOPIC: "stg-service-orders"
+  KAFKA_DESTINATION_TOPIC: "dds-service-orders"
 
   PG_WAREHOUSE_HOST: "rc1b-q27nbql2cobd98f5.mdb.yandexcloud.net"
   PG_WAREHOUSE_PORT: "6432"
