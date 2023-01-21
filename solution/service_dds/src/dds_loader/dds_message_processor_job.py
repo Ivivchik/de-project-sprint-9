@@ -309,11 +309,12 @@ class DdsMessageProcessor:
     def run(self) -> None:
         self._logger.info(f"{datetime.utcnow()}: START")
 
-        for i in range(0, self._batch_size):
+        for _ in range(self._batch_size):
 
             message = self._consumer.consume()
 
             if not message:
+                self._logger.info(f"{datetime.utcnow()}: NO messages. Quitting.")
                 break
 
             h_user_pk = self._message_processing(message)

@@ -116,10 +116,11 @@ class StgMessageProcessor:
         # Пишем в лог, что джоб был запущен.
         self._logger.info(f"{datetime.utcnow()}: START")
 
-        for i in range(0, self._batch_size):
+        for _ in range(self._batch_size):
             message = self._consumer.consume()
 
             if not message:
+                self._logger.info(f"{datetime.utcnow()}: NO messages. Quitting.")
                 break
 
             output_message = self._message_processing(message)
